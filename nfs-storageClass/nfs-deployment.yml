@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+   name: nfs-class
+spec:
+   replicas: 1
+   selector:
+    matchLabels:
+      role: web-class
+   template:
+     metadata:
+       labels: 
+          role: web-class
+     spec:
+       containers:
+       - name: web
+         image: "registry.cn-hangzhou.aliyuncs.com/open-ali/nfs-client-provisioner"
+         volumeMounts:
+         - name: nfs
+           mountPath: "/usr/share/nginx/html"
+         env:
+           - name: PROVISIONER_NAME
+             value: fuseim.pri/ifs
+           - name: NFS_SERVER
+             value: 10.11.100.88
+           - name: NFS_PATH
+             value: /data/class
+          
+       volumes:
+         - name: nfs
+           nfs:
+            server: 10.11.100.88
+            path: /data
+ 
+      
